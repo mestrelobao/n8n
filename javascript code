@@ -1,0 +1,15 @@
+const number1 = "06";
+const number2 = "14";
+const dezenas = $input.first().json.dezenas;
+
+// Check if any of your numbers match
+const hasMatch = dezenas.includes(number1) || dezenas.includes(number2);
+
+// Return the item with a new field indicating if there's a match
+return [{
+  json: {
+    ...$input.first().json,
+    hasMatch: hasMatch,
+    matchedNumbers: dezenas.filter(num => num === number1 || num === number2)
+  }
+}];
