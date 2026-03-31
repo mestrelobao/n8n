@@ -1,0 +1,210 @@
+{
+  "name": "Megasena",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://loteriascaixa-api.herokuapp.com/api/megasena",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        240,
+        48
+      ],
+      "id": "7b90166c-c750-41a1-a9a1-7b068b3fdd20",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        464,
+        48
+      ],
+      "id": "78610efc-a4c4-4c74-9f39-2ca73b8a2c9e",
+      "name": "Limit",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        16,
+        48
+      ],
+      "id": "77b602bb-21c7-4bf3-ae57-1e9902c5b24d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{ $json.hasMatch }}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        48
+      ],
+      "id": "6207752b-1f59-4fc2-b441-5147cf1e4652",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "mestrelobaoguilherme@gmail.com",
+        "subject": "🎉 Parabéns! Você acertou números da Mega-Sena!",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }\n.container { background-color: white; border-radius: 10px; padding: 30px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }\n.header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }\n.winner-badge { font-size: 48px; margin-bottom: 10px; }\n.numbers { background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; }\n.matched { color: #28a745; font-weight: bold; font-size: 24px; }\n.info { color: #666; margin: 10px 0; }\n.footer { text-align: center; color: #999; margin-top: 30px; font-size: 12px; }\n</style>\n</head>\n<body>\n<div class=\"container\">\n<div class=\"header\">\n<div class=\"winner-badge\">🎉🎊🏆</div>\n<h1>VOCÊ ACERTOU!</h1>\n</div>\n<div class=\"numbers\">\n<p class=\"info\"><strong>Concurso:</strong> {{ $json.concurso }}</p>\n<p class=\"info\"><strong>Data:</strong> {{ $json.data }}</p>\n<p class=\"info\"><strong>Números sorteados:</strong> {{ $json.dezenas.join(\", \") }}</p>\n<hr style=\"border: 1px solid #ddd; margin: 15px 0;\">\n<p class=\"matched\">✓ Seus números: {{ $json.matchedNumbers.join(\" e \") }}</p>\n</div>\n<p style=\"text-align: center; font-size: 16px; color: #333;\">\nParabéns! Continue jogando e boa sorte no próximo concurso!\n</p>\n<div class=\"footer\">\n<p>Próximo concurso: {{ $json.proximoConcurso }} - {{ $json.dataProximoConcurso }}</p>\n<p>Prêmio estimado: R$ {{ ($json.valorEstimadoProximoConcurso / 1000000).toFixed(2) }} milhões</p>\n</div>\n</div>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        128
+      ],
+      "id": "8d743284-6d20-4fb7-b2b9-ff882f2d1765",
+      "name": "Send a message1",
+      "webhookId": "04587cf0-33a6-49a5-b935-591f1e29a52b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAdmxNC6PyOQrUdl",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const number1 = \"06\";\nconst number2 = \"14\";\nconst dezenas = $input.first().json.dezenas;\n\n// Check if any of your numbers match\nconst hasMatch = dezenas.includes(number1) || dezenas.includes(number2);\n\n// Return the item with a new field indicating if there's a match\nreturn [{\n  json: {\n    ...$input.first().json,\n    hasMatch: hasMatch,\n    matchedNumbers: dezenas.filter(num => num === number1 || num === number2)\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        48
+      ],
+      "id": "6bf7509e-1b46-4c2f-b6da-87f009a288e2",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "mestrelobaoguilherme@gmail.com",
+        "subject": "=Resultados da Mega-Sena - Concurso {{ $json.concurso }}",
+        "message": "=<!DOCTYPE html>\n<html>\n<head>\n<style>\nbody { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }\n.container { background-color: white; border-radius: 10px; padding: 30px; max-width: 600px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }\n.header { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 10px; text-align: center; margin-bottom: 20px; }\n.icon { font-size: 48px; margin-bottom: 10px; }\n.numbers { background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; }\n.info { color: #666; margin: 10px 0; }\n.message { text-align: center; font-size: 16px; color: #555; margin: 20px 0; }\n.footer { text-align: center; color: #999; margin-top: 30px; font-size: 12px; }\n.next-draw { background-color: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin-top: 20px; }\n</style>\n</head>\n<body>\n<div class=\"container\">\n<div class=\"header\">\n<div class=\"icon\">🎲</div>\n<h1>Resultados da Mega-Sena</h1>\n</div>\n<div class=\"numbers\">\n<p class=\"info\"><strong>Concurso:</strong> {{ $json.concurso }}</p>\n<p class=\"info\"><strong>Data:</strong> {{ $json.data }}</p>\n<p class=\"info\"><strong>Números sorteados:</strong> {{ $json.dezenas.join(\", \") }}</p>\n</div>\n<p class=\"message\">\nDesta vez seus números (06 e 14) não foram sorteados.<br>\nMas não desanime! A sorte pode estar no próximo concurso.\n</p>\n<div class=\"next-draw\">\n<p style=\"margin: 0; font-weight: bold; color: #856404;\">⏰ Próximo Concurso</p>\n<p style=\"margin: 5px 0 0 0; color: #856404;\">\n<strong>Concurso {{ $json.proximoConcurso }}</strong> - {{ $json.dataProximoConcurso }}<br>\nPrêmio estimado: <strong>R$ {{ ($json.valorEstimadoProximoConcurso / 1000000).toFixed(2) }} milhões</strong>\n</p>\n</div>\n<div class=\"footer\">\n<p>🍀 Boa sorte no próximo sorteio!</p>\n</div>\n</div>\n</body>\n</html>",
+        "options": {}
+      },
+      "id": "dbc9f022-5838-45c9-bcce-b892b891d907",
+      "name": "Send No Win Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1136,
+        -80
+      ],
+      "webhookId": "8415a8ae-b88e-4068-bef0-8455db9d7feb",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAdmxNC6PyOQrUdl",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send No Win Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send No Win Email": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7b47e463-4008-49c2-ba08-ed1a4f52d5e6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab6b26c29697dc052ac38799990537ce81293de47fc03ba0d16cb3f7b93ddb07"
+  },
+  "id": "gxm6hp80aTXG4f3c",
+  "tags": []
+}
