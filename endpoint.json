@@ -1,0 +1,88 @@
+{
+  "name": "endpoint",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "234bb097-7920-40cc-9caa-5c5c4544112d",
+        "responseMode": "responseNode",
+        "options": {
+          "binaryPropertyName": "data",
+          "rawBody": false
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        432
+      ],
+      "id": "a3bffe2f-37e9-4619-aa5e-99a90d048c6d",
+      "name": "Webhook",
+      "webhookId": "234bb097-7920-40cc-9caa-5c5c4544112d"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.resposta = {\"nome\":\"buceta\"};\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -528,
+        432
+      ],
+      "id": "c5865f95-01c9-44aa-954f-65f7b1b91f5f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.resposta }}",
+        "options": {}
+      },
+      "id": "6ab10998-2629-4749-82e8-55a8d9069aa4",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -304,
+        432
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4db32bdd-0efd-4ee9-a04e-af2177d4e1e2",
+  "meta": {
+    "instanceId": "ab6b26c29697dc052ac38799990537ce81293de47fc03ba0d16cb3f7b93ddb07"
+  },
+  "id": "jjaNzKoyU7oW1kbN",
+  "tags": []
+}
