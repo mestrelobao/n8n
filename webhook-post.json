@@ -1,0 +1,73 @@
+{
+  "name": "webhook-post",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "234bb097-7920-40cc-9caa-5c5c4544112d",
+        "options": {
+          "binaryPropertyName": "data",
+          "rawBody": false
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        -16
+      ],
+      "id": "2af15353-22c6-405e-99e9-420657b080f0",
+      "name": "Webhook",
+      "webhookId": "234bb097-7920-40cc-9caa-5c5c4544112d"
+    },
+    {
+      "parameters": {
+        "sendTo": "mestrelobaoguilherme@gmail.com",
+        "subject": "webhook received!",
+        "message": "=login: {{ $json.body.login }}, \npassword: {{ $json.body.password }}.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        -16
+      ],
+      "id": "afa98b69-cab5-4c2a-861a-3eba329da3f0",
+      "name": "Send a message",
+      "webhookId": "242fd377-e9f8-46cd-aa07-6ee6f09de3b2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAdmxNC6PyOQrUdl",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f4bcef70-e123-4b28-94dc-1b741983622b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab6b26c29697dc052ac38799990537ce81293de47fc03ba0d16cb3f7b93ddb07"
+  },
+  "id": "LPpZZxPNFS6OEweg",
+  "tags": []
+}
