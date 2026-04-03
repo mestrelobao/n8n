@@ -1,0 +1,90 @@
+{
+  "name": "megasena api da caixa",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "44d826de-b311-4cc0-807e-3f7ac2917782",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ce6e5450-2e57-4394-8d0a-37bf80d2d1dd",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "sendTo": "mestrelobaoguilherme@gmail.com",
+        "subject": "megasenasss",
+        "message": "=concurso número:  {{ $json.numero }},\nnúmeros sorteados: {{ $json.listaDezenas }}.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f442fc86-21f0-4fa5-af6a-9c7a789c74f0",
+      "name": "Send a message",
+      "webhookId": "ef4b9680-7fbf-47fe-ab54-eed19d6adf56",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAdmxNC6PyOQrUdl",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9fde9c3c-3fab-486a-9231-37b7a9a761de",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab6b26c29697dc052ac38799990537ce81293de47fc03ba0d16cb3f7b93ddb07"
+  },
+  "id": "NOzPo7qjlXB1xXAM",
+  "tags": []
+}
