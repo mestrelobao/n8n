@@ -1,0 +1,125 @@
+{
+  "name": "megasena usando scrape",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "43c3fd10-4684-4424-a192-cb176f282785",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx",
+        "additionalFields": {
+          "renderJs": true,
+          "stealthProxy": true,
+          "wait": 2000,
+          "waitBrowser": "domcontentloaded"
+        }
+      },
+      "type": "n8n-nodes-scrapingbee.ScrapingBee",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4b511b86-33b4-465d-9e1c-edda0e882460",
+      "name": "Scrape using HTML API",
+      "credentials": {
+        "ScrapingBeeApi": {
+          "id": "q3W8xJMz3WGqBJ85",
+          "name": "ScrapingBee account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n\nconst html = $input.first().json.data;\n\nconst dezenas = [...html.matchAll(/<li[^>]*>(\\d+)<\\/li>/g)]\n  .map(match => match[1]);\n\nfor (const item of $input.all()) {\n  item.json.numeros = dezenas;\n}\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "1251a4d1-d0c6-42aa-8b21-d3fe186a32c6",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "sendTo": "mestrelobaoguilherme@gmail.com",
+        "subject": "Resultados da megasena",
+        "message": "=Segue os números sorteados:  {{ $json.numeros }}.\nObrigado por usar nossos serviços.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "fdfe9a3c-7876-4788-a9bf-bba8200084d7",
+      "name": "Send a message",
+      "webhookId": "7c8581b4-ae3e-4cfd-a974-94985b2599cd",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "kAdmxNC6PyOQrUdl",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Scrape using HTML API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Scrape using HTML API": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b6d6753b-cf0f-420d-9cc9-45308cf934f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab6b26c29697dc052ac38799990537ce81293de47fc03ba0d16cb3f7b93ddb07"
+  },
+  "id": "gskwi8ztGDIWyVpT",
+  "tags": []
+}
